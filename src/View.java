@@ -6,14 +6,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public final class View extends JFrame {
 
-//    public JTextArea tArea = new JTextArea("", 0, 50);
-//    public JTextArea tAreaResent = new JTextArea("", 0, 50);
-//    public JTextArea tArea = new JTextArea("", 0, 50);
-//    public JTextArea tAreaResent = new JTextArea("", 0, 50);
-//    public JTextPane tArea = new JTextPane();          //не нашла где размеры задавать, но ок
-//    public JTextPane tAreaResent = new JTextPane();
-    public JTextField tArea = new JTextField("", 50);
-    public JTextField tAreaResent = new JTextField("", 50);
+//    public JTextArea tArea = new JTextArea();
+//    public JTextArea tAreaResent = new JTextArea();
+
+    public JTextField tArea = new JTextField();
+    public JTextField tAreaResent = new JTextField();
     private JLabel lTimer = new JLabel("Timer:");
     private JLabel lProgress = new JLabel("Progress: ");
     private JButton bOpenLesson = new JButton("Open Lesson");
@@ -23,41 +20,42 @@ public final class View extends JFrame {
     public void createUI() {
         bOpenLesson.setEnabled(true);
         bOpenLesson.setFocusable(false);
+
         Container cp = getContentPane();
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         cp.setLayout(gbl);
         setTitle("iStamina (by Burkova A. S.)");
-        setName("iStamina");
 //        cp.setBackground(Color.decode("#fec8ff"));
 //        setSize(640, 480);
-        //setLocation(150, 100);
+        setLocation(150, 100);
         setResizable(false);
-//        cp.setBackground(Color.LIGHT_GRAY);
-
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //text tAreaResent
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(4, 4, 4, 0);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
         gbc.gridwidth = 1;
         tAreaResent.setBackground(Color.decode("#d2d2d2"));
-//        tAreaResent.setBackground(Color.decode("#bf8fec"));
-//        tAreaResent.setAlignmentX(Component.LEFT_ALIGNMENT);
-//        tAreaResent.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        tAreaResent.setHorizontalAlignment(JTextField.RIGHT);  //не нашла поля выравнивания в JTextArea
-        tAreaResent.setSize(new Dimension(350, 300));
+        tAreaResent.setHorizontalAlignment(JTextField.RIGHT);  //нет выравнивания для JTextArea
         tAreaResent.setFocusable(false);
         tAreaResent.setEditable(false);
+        tAreaResent.setPreferredSize(new Dimension(550, 16));
         cp.add(tAreaResent, gbc);
 
         //text tArea
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.insets = new Insets(4, -1, 4, 0);
+        gbc.insets = new Insets(4, 0, 4, 4);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
         gbc.gridwidth = 1;
-//        tArea.setLineWrap(true); //не нужно
-        tArea.setSize(new Dimension(350, 300));
         tArea.setEditable(false);
+        tArea.setPreferredSize(new Dimension(550, 16));
+//        tAreaResent.setMaximumSize(new Dimension(50, 10));
+//        tAreaResent.setSize(50, 10);
         tArea.setCaretPosition(0);
         tArea.addKeyListener(new KeyAdapter() {
             @Override
@@ -66,9 +64,11 @@ public final class View extends JFrame {
                     tArea.setText("");
                 }
                 keyTyped = e.getKeyText(e.getKeyCode()).toLowerCase();
-                tAreaResent.setText(Stamina.updateResent(keyTyped));
-                tArea.setText(Stamina.updateActual(keyTyped));
-                tArea.setCaretPosition(0);
+                if (Stamina.keyChecker(keyTyped)) {
+                    tAreaResent.setText(Stamina.updateResent());
+                    tArea.setText(Stamina.updateActual());
+                    tArea.setCaretPosition(0);
+                }
                 System.out.println(keyTyped);
             }
         });
@@ -76,12 +76,20 @@ public final class View extends JFrame {
 
         //button find
         //bOpenLesson.addActionListener(clientListener);
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        gbc.gridwidth = GridBagConstraints.REMAINDER;
+//        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
         cp.add(bOpenLesson, gbc);
 
         //label lTimer
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
         cp.add(lTimer, gbc);
 
 //        http://docs.oracle.com/javase/7/docs/api/java/awt/MenuShortcut.html
