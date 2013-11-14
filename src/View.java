@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-
 public final class View extends JFrame {
 
     private JTextArea tArea = new JTextArea();
@@ -17,6 +16,8 @@ public final class View extends JFrame {
     private JLabel lProgress = new JLabel("Progress: ");
     private JButton bStart = new JButton("Старт");
     private static String keyTyped = "";
+
+    private Stamina stamina = new Stamina();
 
 
     public void createUI() {
@@ -82,10 +83,9 @@ public final class View extends JFrame {
                     tArea.setText("");
                 }
                 keyTyped = e.getKeyText(e.getKeyCode()).toLowerCase();
-                if (Stamina.keyChecker(keyTyped)) {
-                    tAreaResent.setText(Stamina.updateResent());
-                    tArea.setText(Stamina.updateActual());
-                    tArea.setCaretPosition(0);
+                if (stamina.keyChecker(keyTyped)) {
+                    setResentText(stamina.updateResent());
+                    setActualText(stamina.updateActual());
                 }
                 System.out.println(keyTyped);
             }
@@ -125,7 +125,7 @@ public final class View extends JFrame {
         menuFileItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ev) {
-                String newLesson = read(OpenFileDialog());
+                String newLesson = read(openFileDialog());
 //                System.out.println(newLesson);
             }
         });
@@ -135,7 +135,7 @@ public final class View extends JFrame {
     }
 
 
-    public static String OpenFileDialog() {
+    public String openFileDialog() {
         String path = null;
 
         JFileChooser chooser = new JFileChooser();
@@ -156,7 +156,7 @@ public final class View extends JFrame {
     }
 
 
-    public static String read(String fileName) { // читаем данные из файла
+    public String read(String fileName) { // читаем данные из файла
         StringBuilder sb = new StringBuilder();
         try {
             BufferedReader in = new BufferedReader(new FileReader(new File(
@@ -185,10 +185,6 @@ public final class View extends JFrame {
 
     public void setResentText(String resentText) {
         tAreaResent.setText(resentText);
-    }
-
-    public void addStyleNow(Style style) {
-
     }
 
 }
