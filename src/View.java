@@ -11,7 +11,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public final class View extends JFrame {
 
     private JTextArea tArea = new JTextArea();
-    private JTextPane tAreaResent = new JTextPane();
+    private JTextField tAreaResent = new JTextField();
     private JLabel lTimer = new JLabel("Timer:");
     private JLabel lProgress = new JLabel("Progress: ");
     private JButton bStart = new JButton("Старт");
@@ -35,24 +35,6 @@ public final class View extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        // выравнивание по правой стороне для tAreaResent
-        String es = tAreaResent.getText();
-        StyleContext ct = new StyleContext();
-        StyledDocument dc = new DefaultStyledDocument(ct);
-
-        Style style = ct.getStyle(StyleContext.DEFAULT_STYLE);
-        StyleConstants.setAlignment(style, StyleConstants.ALIGN_RIGHT);
-//        StyleConstants.setBackground(style, Color.decode("#fec8ff")); //цветной фон букв
-        StyleConstants.setFirstLineIndent(style, 0);
-        try {
-            dc.insertString(dc.getLength(), es, style);
-//            dc.setCharacterAttributes(0, 5, style, false); //цветной фон букв
-        } catch (BadLocationException badLocationException) {
-            System.err.println("Exception:" + badLocationException);
-        }
-        tAreaResent.setStyledDocument(dc);
-
-
         //text tAreaResent
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(10, 10, 10, 0);
@@ -60,6 +42,9 @@ public final class View extends JFrame {
         c.gridy = 0;
         c.gridheight = 1;
         c.gridwidth = 1;
+//        tAreaResent.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        tAreaResent.setBorder(BorderFactory.createEmptyBorder());
+        tAreaResent.setHorizontalAlignment(JTextField.RIGHT);
         tAreaResent.setBackground(Color.decode("#d2d2d2"));
         tAreaResent.setFocusable(false);
         tAreaResent.setEditable(false);

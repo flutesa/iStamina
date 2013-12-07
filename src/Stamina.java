@@ -31,7 +31,6 @@ public class Stamina {
     public String updateResent() {
         if (lessonProcessing.getStrCurrentLength() == 1) endOfLesson(); //end of line
         StringBuilder tmp = lessonProcessing.getStrResent();
-        tmp.deleteCharAt(0);
         tmp.append(lessonProcessing.getStrCurrent().substring(0, 1));
         lessonProcessing.setStrResent(tmp.toString());
         return tmp.toString();

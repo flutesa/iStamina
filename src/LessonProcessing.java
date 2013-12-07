@@ -4,8 +4,8 @@ public class LessonProcessing {
     private StringBuilder strResent = new StringBuilder();
 
     //temporary strings
-    private String lessonContent =    new String("bbbnnn bbnbn nbbnn bnbnb nnbnb nan bab blab lan ban jan bnbbn nbnbn abba anna jab nab bass bask bad fan lab fab dab nb dan bland blank and bank vvvnnn vvnvn nvvnn vnvnv nnvnv val van vnvvn nvnvn java vs vb vandal vas vj lava naval dvd mmmvvv mmvmv vmmvv mvmvm vvmvm mak malm mvmmv vmvmv am lam mass mamma small mask jam sms jvm bbmbm mbbmm bmbmb mmbmb amb lamb bmbbm mbmbm bam jamb mamba vvbvb bvvbb vbvbv bvds vnnmnm mnnmm man mmnmn manna nam vnvbm nbmmv nvnmb bnvvm bmbvn mvnnb mbmnv vmbbn band van kvass lambda dvd nan jams small bank vandal");
-    private String lessonResContent = new String("                                            ");       //^ норм отображение напечатанного начинается
+    private String lessonContent =    new String("wwwooo wwowo owwoo wowow oowow wow low now owe woe wowwo owowo row owner wood woke worm wolf world how work qqqooo qqoqo oqqoo qoqoq ooqoq qua iq qoqqo oqoqo equal quad quake quiet quit unique queen quay quod quoin quorum quota quotha pppqqq ppqpq qppqq pqpqp qqpqp equip up pqppq qpqpq pal pig pen pan pap pepper pepsi rap vip tape pair palp opaque wwpwp pwwpp wpwpw ppwpw paw pow wpwwp pwpwp wrap wipe weep whip wimp qqwqw wqqww sow qwqwq wwqwq query oopop poopp pop opopo ppopo opel prop qoqwp owppq oqopw woqqp wpwqo pqoow pwpoq qpwwo quid pro quo equator whore purple equivoke whole power opaque");
+    private String lessonResContent = new String("");       //^ норм отображение напечатанного начинается
 
 
     public LessonProcessing() {
