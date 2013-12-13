@@ -1,11 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import javax.swing.*;
-import javax.swing.text.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public final class View extends JFrame {
@@ -18,10 +13,11 @@ public final class View extends JFrame {
     private static String keyTyped = "";
 
     private Stamina stamina = new Stamina();
+    final String[] lessons_names = LessonsJSON.getLessonsNames();
 
 
     public void createUI() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 //        setPreferredSize(new Dimension(700, 100));
         setLocation(150, 100);
         setResizable(false);
@@ -42,7 +38,6 @@ public final class View extends JFrame {
         c.gridy = 0;
         c.gridheight = 1;
         c.gridwidth = 1;
-//        tAreaResent.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         tAreaResent.setBorder(BorderFactory.createEmptyBorder());
         tAreaResent.setHorizontalAlignment(JTextField.RIGHT);
         tAreaResent.setBackground(Color.decode("#d2d2d2"));
@@ -98,19 +93,38 @@ public final class View extends JFrame {
 
 //        http://docs.oracle.com/javase/7/docs/api/java/awt/MenuShortcut.html
         MenuBar menuBar = new MenuBar();
-        Menu menuFile = new Menu("File");
-        Menu menuLesson = new Menu("Lesson");
-        MenuItem menuFileItem = new MenuItem("Open");
-        MenuItem menuLessonsItem = new MenuItem("En");
-        menuFile.add(menuFileItem);
-        menuLesson.add(menuLessonsItem);
-        menuBar.add(menuFile);
-        menuBar.add(menuLesson);
+        Menu menuLanguages = new Menu("Language");
+        MenuItem menuLanguagesItem_EN = new MenuItem("⟹ English");
+        MenuItem menuLanguagesItem_RU = new MenuItem("     Russian");
+        menuLanguages.add(menuLanguagesItem_EN);
+        menuLanguages.add(menuLanguagesItem_RU);
+        menuBar.add(menuLanguages);
+
+        Menu menuLessons = new Menu("Lesson");
+        MenuItem menuItemLessonOpen = new MenuItem("Open");
+
+        for (int i = 0;  i < lessons_names.length; i++) {
+//            menuLessons.add(new MenuItem("⟹ " + lessons_names[i]));
+            final int perem = i;
+            menuLessons.add(new MenuItem(lessons_names[i])).addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setActualText(LessonsJSON.getLesson(lessons_names[perem]));
+                    setResentText("");
+                    setTitle(lessons_names[perem]);
+                }
+            });
+        }
+        menuLessons.addSeparator();
+        menuLessons.add(menuItemLessonOpen);
+        menuBar.add(menuLessons);
+
+
         setMenuBar(menuBar);
-        menuFileItem.addActionListener(new ActionListener() {
+        menuItemLessonOpen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ev) {
-                String newLesson = read(openFileDialog());
+                String newLesson = LessonsJSON.read(openFileDialog());
 //                System.out.println(newLesson);
             }
         });
@@ -138,27 +152,6 @@ public final class View extends JFrame {
             System.exit(0);
         }
         return path;
-    }
-
-
-    public String read(String fileName) { // читаем данные из файла
-        StringBuilder sb = new StringBuilder();
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(new File(
-                    fileName).getAbsoluteFile()));
-            try {
-                String s;
-                while ((s = in.readLine()) != null) {
-                    sb.append(s);
-                    sb.append("\n");
-                }
-            } finally {
-                in.close();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return sb.toString();
     }
 
 

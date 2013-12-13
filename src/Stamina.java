@@ -23,7 +23,7 @@ public class Stamina {
     public String updateActual() {
         StringBuilder tmp = lessonProcessing.getStrCurrent();
         tmp.replace(0, lessonProcessing.getStrCurrentLength() - 1, lessonProcessing.getStrCurrent().substring(1, lessonProcessing.getStrCurrentLength() - 1));
-        lessonProcessing.setStrCurrent(tmp.toString());
+        lessonProcessing.updateStrCurrent(tmp.toString());
         return tmp.toString();
     }
 
@@ -32,7 +32,7 @@ public class Stamina {
         if (lessonProcessing.getStrCurrentLength() == 1) endOfLesson(); //end of line
         StringBuilder tmp = lessonProcessing.getStrResent();
         tmp.append(lessonProcessing.getStrCurrent().substring(0, 1));
-        lessonProcessing.setStrResent(tmp.toString());
+        lessonProcessing.updateStrResent(tmp.toString());
         return tmp.toString();
     }
 
