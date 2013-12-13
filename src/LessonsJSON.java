@@ -10,9 +10,7 @@ public class LessonsJSON {
 
         Object obj = JSONValue.parse(json);
         JSONObject jsonObj = (JSONObject) obj;
-
         ArrayList ln = (ArrayList)jsonObj.get("lessons names");
-
 
         return (String[])ln.toArray(new String[ln.size()]);
     }
@@ -47,7 +45,5 @@ public class LessonsJSON {
         }
         return sb.toString();
     }
-
-
 
 }

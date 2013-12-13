@@ -1,3 +1,5 @@
+import apple.laf.JRSUIConstants;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -12,7 +14,7 @@ public final class View extends JFrame {
     private JButton bStart = new JButton("Старт");
     private static String keyTyped = "";
 
-    private Stamina stamina = new Stamina();
+//    private Stamina stamina = new Stamina();
     final String[] lessons_names = LessonsJSON.getLessonsNames();
 
 
@@ -53,19 +55,21 @@ public final class View extends JFrame {
         c.gridy = 0;
         c.gridheight = 1;
         c.gridwidth = 1;
+        tArea.setDisabledTextColor(Color.red);
         tArea.setEditable(false);
         tArea.setCaretPosition(0);
         tArea.setPreferredSize(new Dimension(300, 16));
         tArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER){
-                    tArea.setText("");
-                }
+//                if (e.getKeyCode() == KeyEvent.VK_ENTER){
+//                    tArea.setText("");
+//                }
                 keyTyped = e.getKeyText(e.getKeyCode()).toLowerCase();
-                if (stamina.keyChecker(keyTyped)) {
-                    setResentText(stamina.updateResent());
-                    setActualText(stamina.updateActual());
+                if (Stamina.strCurrent.length() == 0) endOfLesson();
+                if (Stamina.keyChecker(keyTyped)) {
+                    setResentText(Stamina.updateResent());
+                    setActualText(Stamina.updateActual());
                 }
                 System.out.println(keyTyped);
             }
@@ -103,15 +107,17 @@ public final class View extends JFrame {
         Menu menuLessons = new Menu("Lesson");
         MenuItem menuItemLessonOpen = new MenuItem("Open");
 
-        for (int i = 0;  i < lessons_names.length; i++) {
+        for (int i = 0; i < lessons_names.length; i++) {
 //            menuLessons.add(new MenuItem("⟹ " + lessons_names[i]));
             final int perem = i;
             menuLessons.add(new MenuItem(lessons_names[i])).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setActualText(LessonsJSON.getLesson(lessons_names[perem]));
-                    setResentText("");
+                    setResentText(Stamina.updateResent(""));
+                    setActualText(Stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[perem])));
+
                     setTitle(lessons_names[perem]);
+
                 }
             });
         }
@@ -155,14 +161,30 @@ public final class View extends JFrame {
     }
 
 
+    public void endOfLesson() {
+        Object[] options = {"Да!", "Потом..."};
+        int n = JOptionPane.showOptionDialog(null, "Оличек - молодец, давай ещё?!", "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+        if (n==1) System.exit(0);
+        else {
+            Stamina.lessonID++;
+            setResentText(Stamina.updateResent(""));
+            setActualText(Stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[Stamina.lessonID])));
+
+        }
+    }
+
+
     public void setActualText(String actualText) {
-        tArea.setCaretPosition(0);
         tArea.setText(actualText);
+        tArea.setCaretPosition(0);
     }
 
 
     public void setResentText(String resentText) {
+        tAreaResent.setHorizontalAlignment(JTextField.RIGHT);
         tAreaResent.setText(resentText);
+        tAreaResent.setHorizontalAlignment(JTextField.RIGHT);
     }
 
 }

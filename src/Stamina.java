@@ -1,48 +1,55 @@
-import javax.swing.*;
 
 public class Stamina {
 
-    static LessonProcessing lessonProcessing = new LessonProcessing();
+    public static int lessonID = 0;
+    public static String strResent = "";
+    public static String strCurrent = LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[lessonID]);
+
 
     public static void main(String[] args) {
         View view = new View();
+
         view.createUI();
 
-        view.setResentText(lessonProcessing.getStrResent().toString());
-        view.setActualText(lessonProcessing.getStrCurrent().toString());
+        view.setResentText(strResent);
+        view.setActualText(strCurrent);
+
     }
 
 
-    public boolean keyChecker(String key) {
+    public static boolean keyChecker(String key) {
         if (key.equals("space")) key = " ";
-        if (key.equals(lessonProcessing.getStrCurrent().substring(0, 1))) return true;
-        else return false;
+        if (key.equals("semicolon")) key = ";";
+        if (key.equals("slash")) key = "/";
+        return key.equals(strCurrent.substring(0, 1));
     }
 
 
-    public String updateActual() {
-        StringBuilder tmp = lessonProcessing.getStrCurrent();
-        tmp.replace(0, lessonProcessing.getStrCurrentLength() - 1, lessonProcessing.getStrCurrent().substring(1, lessonProcessing.getStrCurrentLength() - 1));
-        lessonProcessing.updateStrCurrent(tmp.toString());
-        return tmp.toString();
+    public static String updateActual() {
+        if (strCurrent.length() == 0) {
+            return "";
+        }
+        strCurrent = strCurrent.substring(1, strCurrent.length());
+        return strCurrent;
     }
 
 
-    public String updateResent() {
-        if (lessonProcessing.getStrCurrentLength() == 1) endOfLesson(); //end of line
-        StringBuilder tmp = lessonProcessing.getStrResent();
-        tmp.append(lessonProcessing.getStrCurrent().substring(0, 1));
-        lessonProcessing.updateStrResent(tmp.toString());
-        return tmp.toString();
+    public static String updateResent() {
+        strResent = strResent + strCurrent.substring(0, 1);
+        return strResent;
+    }
+
+    public static String updateActual(String str) {
+        strCurrent = str;
+        return strCurrent;
     }
 
 
-    public static void endOfLesson() {
-        Object[] options = {"Да!", "Потом..."};
-        int n = JOptionPane.showOptionDialog(null, "Оличек - молодец, давай ещё?!", "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-        if (n==1) System.exit(0);
-        else {}
+    public static String updateResent(String str) {
+        strResent = str;
+        return strResent;
     }
+
+
 
 }
