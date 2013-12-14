@@ -8,10 +8,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public final class View extends JFrame {
 
     private JTextArea tArea = new JTextArea();
-    private JTextField tAreaResent = new JTextField();
     private JLabel lTimer = new JLabel("Timer:");
     private JLabel lProgress = new JLabel("Progress: ");
-    private JButton bStart = new JButton("Старт");
+//    private JButton bStart = new JButton("Старт");
     private static String keyTyped = "";
 
 //    private Stamina stamina = new Stamina();
@@ -20,8 +19,8 @@ public final class View extends JFrame {
 
     public void createUI() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        setPreferredSize(new Dimension(700, 100));
-        setLocation(150, 100);
+        setPreferredSize(new Dimension(999, 150));
+        setLocation(150, 150);
         setResizable(false);
         setName("iStamina");
         setTitle("iStamina (by Burkova A. S.)");
@@ -33,32 +32,23 @@ public final class View extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        //text tAreaResent
+
+        //text tArea
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10, 10, 10, 0);
+        c.insets = new Insets(10, 10, 10, 10);
         c.gridx = 0;
         c.gridy = 0;
         c.gridheight = 1;
         c.gridwidth = 1;
-        tAreaResent.setBorder(BorderFactory.createEmptyBorder());
-        tAreaResent.setHorizontalAlignment(JTextField.RIGHT);
-        tAreaResent.setBackground(Color.decode("#d2d2d2"));
-        tAreaResent.setFocusable(false);
-        tAreaResent.setEditable(false);
-        tAreaResent.setPreferredSize(new Dimension(300, 16));
-        add(tAreaResent, c);
+        tArea.setSelectionColor(Color.decode("#d2d2d2"));
+        tArea.select(0, 50);
+        tArea.grabFocus();
 
-
-        //text tArea
-        c.insets = new Insets(10, 0, 10, 10);
-        c.gridx = 1;
-        c.gridy = 0;
-        c.gridheight = 1;
-        c.gridwidth = 1;
-        tArea.setDisabledTextColor(Color.red);
         tArea.setEditable(false);
         tArea.setCaretPosition(0);
-        tArea.setPreferredSize(new Dimension(300, 16));
+        tArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
+        tArea.setPreferredSize(new Dimension(900, 35));
+//        tArea.setMaximumSize(new Dimension(500, 30));
         tArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -68,8 +58,9 @@ public final class View extends JFrame {
                 keyTyped = e.getKeyText(e.getKeyCode()).toLowerCase();
                 if (Stamina.strCurrent.length() == 0) endOfLesson();
                 if (Stamina.keyChecker(keyTyped)) {
-                    setResentText(Stamina.updateResent());
                     setActualText(Stamina.updateActual());
+                    tArea.select(0, 50);
+                    tArea.grabFocus();
                 }
                 System.out.println(keyTyped);
             }
@@ -79,13 +70,13 @@ public final class View extends JFrame {
 
         //button bStart
         //bStart.addActionListener(clientListener);
-        bStart.setEnabled(true);
-        bStart.setFocusable(false);
-        c.gridx = 2;
-        c.gridy = 0;
-        c.gridheight = 1;
-        c.gridwidth = 1;
-        add(bStart, c);
+//        bStart.setEnabled(true);
+//        bStart.setFocusable(false);
+//        c.gridx = 2;
+//        c.gridy = 0;
+//        c.gridheight = 1;
+//        c.gridwidth = 1;
+//        add(bStart, c);
 
         //label lTimer
         c.insets = new Insets(0, 10, 10, 10);
@@ -113,9 +104,7 @@ public final class View extends JFrame {
             menuLessons.add(new MenuItem(lessons_names[i])).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setResentText(Stamina.updateResent(""));
                     setActualText(Stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[perem])));
-
                     setTitle(lessons_names[perem]);
 
                 }
@@ -167,10 +156,9 @@ public final class View extends JFrame {
 
         if (n==1) System.exit(0);
         else {
-            Stamina.lessonID++;
-            setResentText(Stamina.updateResent(""));
-            setActualText(Stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[Stamina.lessonID])));
-
+//            Stamina.lessonID++;
+            setActualText(Stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[++Stamina.lessonID])));
+//предусмотреть выход за границы массива!!!
         }
     }
 
@@ -178,13 +166,8 @@ public final class View extends JFrame {
     public void setActualText(String actualText) {
         tArea.setText(actualText);
         tArea.setCaretPosition(0);
-    }
-
-
-    public void setResentText(String resentText) {
-        tAreaResent.setHorizontalAlignment(JTextField.RIGHT);
-        tAreaResent.setText(resentText);
-        tAreaResent.setHorizontalAlignment(JTextField.RIGHT);
+        tArea.select(0, 50);
+        tArea.grabFocus();
     }
 
 }
