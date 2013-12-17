@@ -1,24 +1,20 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-public final class View extends JFrame {
+public class View extends JFrame {
 
     private JTextArea tArea = new JTextArea();
     private JLabel lTimer = new JLabel("Timer:");
-    private JLabel lProgress = new JLabel("Progress: ");
-    //    private JButton bStart = new JButton("Старт");
-    private String keyTyped = "";
+//    private JLabel lProgress = new JLabel("Progress: ");
+    private char keyTyped;
 
     private Stamina stamina = new Stamina();
     final String[] lessons_names = LessonsJSON.getLessonsNames();
 
 
-    public void createUI() {
+    public View() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(900, 150));
         setLocation(150, 150);
@@ -43,10 +39,10 @@ public final class View extends JFrame {
         c.gridwidth = 1;
         tArea.setSelectionColor(Color.decode("#d2d2d2"));
         tArea.setEditable(false);
-//        tArea.setFocusable(false);
         tArea.setCaretPosition(0);
         tArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
         tArea.setSelectedTextColor(Color.decode("#505050"));
+//        tArea.setBackground(Color.decode("#fec8ff"));
         tArea.setPreferredSize(new Dimension(850, 33));
         tArea.addKeyListener(new KeyAdapter() {
             @Override
@@ -54,7 +50,7 @@ public final class View extends JFrame {
 //                if (e.getKeyCode() == KeyEvent.VK_ENTER){
 //                    tArea.setText("");
 //                }
-                keyTyped = e.getKeyText(e.getKeyCode()).toLowerCase();
+                keyTyped = e.getKeyChar();
                 if (stamina.strCurrent.length() == 25) endOfLesson();
                 if (stamina.keyChecker(keyTyped)) {
                     setActualText(stamina.updateActual());
@@ -69,16 +65,28 @@ public final class View extends JFrame {
         tArea.grabFocus();
         setTitle(lessons_names[0]);
 
+        tArea.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                tArea.select(0, 25);
+                tArea.grabFocus();
+            }
 
-        //button bStart
-        //bStart.addActionListener(clientListener);
-//        bStart.setEnabled(true);
-//        bStart.setFocusable(false);
-//        c.gridx = 2;
-//        c.gridy = 0;
-//        c.gridheight = 1;
-//        c.gridwidth = 1;
-//        add(bStart, c);
+            @Override
+            public void mousePressed(MouseEvent e) {
+                tArea.select(0, 25);
+                tArea.grabFocus();
+            }
+        });
+
+        tArea.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                tArea.select(0, 25);
+                tArea.grabFocus();
+            }
+        });
+
 
         //label lTimer
         c.insets = new Insets(0, 10, 10, 10);

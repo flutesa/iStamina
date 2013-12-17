@@ -7,17 +7,12 @@ public class Stamina {
 
 
     public static void main(String[] args) {
-        View view = new View();
-        view.createUI();
+        new View();
     }
 
 
-    public boolean keyChecker(String key) {
-        if (key.equals("space")) key = " ";
-        if (key.equals("semicolon")) key = ";";
-        if (key.equals("slash")) key = "/";
-        if (key.equals("quote")) key = "\"";
-        return key.equals(strCurrent.substring(25, 26));
+    public boolean keyChecker(char key) {
+        return key == strCurrent.substring(25, 26).toCharArray()[0];
     }
 
 
