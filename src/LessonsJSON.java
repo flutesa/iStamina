@@ -1,4 +1,5 @@
-import org.json.simple.*;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,15 +13,23 @@ import java.util.*;
 
 public class LessonsJSON {
 
+    private static String language = "src/lessons_en.json";
+
+
+    public static void setLanguage(String lang) {
+        language = lang;
+    }
+
+
     public static String[] getLessonsNames() {
-        String jsonText = read("src/lessons_en.json");
-//        String jsonText = read("src/lessons_ru.json");
+        String jsonText = read(language);
 
         JSONParser parser = new JSONParser();
-        ContainerFactory containerFactory = new ContainerFactory(){
+        ContainerFactory containerFactory = new ContainerFactory() {
             public List creatArrayContainer() {
                 return new LinkedList();
             }
+
             public Map createObjectContainer() {
                 return new LinkedHashMap();
             }
@@ -30,19 +39,19 @@ public class LessonsJSON {
         Map json = null;
         String key;
         try {
-            json = (Map)parser.parse(jsonText, containerFactory);
+            json = (Map) parser.parse(jsonText, containerFactory);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-            Iterator iter = (json != null ? json.entrySet().iterator() : null);
-            while(iter.hasNext()){
-                Map.Entry entry = (Map.Entry)iter.next();
-                key = (String)entry.getKey();
-                if (key.equals("_comment")) {
-                    continue;
-                }
-                ln.add(key);
+        Iterator iter = (json != null ? json.entrySet().iterator() : null);
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            key = (String) entry.getKey();
+            if (key.equals("_comment")) {
+                continue;
             }
+            ln.add(key);
+        }
 
         return ln.toArray(new String[ln.size()]);
 //        return (String[])(json != null ? json.keySet().toArray(new String[json.size()]) : new Object[0]);
@@ -50,13 +59,12 @@ public class LessonsJSON {
 
 
     public static String getLesson(String lName) {
-        String jsonText = read("src/lessons_en.json");
-//        String jsonText = read("src/lessons_ru.json");
+        String jsonText = read(language);
 
         Object obj = JSONValue.parse(jsonText);
         JSONObject jsonObj = (JSONObject) obj;
 
-        return (String)jsonObj.get(lName);
+        return (String) jsonObj.get(lName);
     }
 
 

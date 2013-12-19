@@ -3,15 +3,24 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 
+
 public class View extends JFrame {
 
     private JTextArea tArea = new JTextArea();
     private JLabel lTimer = new JLabel("Timer:");
-//    private JLabel lProgress = new JLabel("Progress: ");
-    private char keyTyped;
-
+    //    private JLabel lProgress = new JLabel("Progress: ");
+    private MenuBar menuBar = new MenuBar();
+    private Menu menuLanguages = new Menu("Language"); //maybe "Options"
+    private CheckboxMenuItem menuLanguagesItem_EN = new CheckboxMenuItem("English", true);
+    private CheckboxMenuItem menuLanguagesItem_RU = new CheckboxMenuItem("Russian", false);
+    private Menu menuLessons = new Menu("Lesson");
+    private MenuItem menuItemLessonOpen = new MenuItem("Open", new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('o'), false));
+    private Menu menuHelp = new Menu("?");
+    private MenuItem menuHelpItemUsers = new MenuItem("Users", new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('u'), false));
+    private MenuItem menuHelpItemStatistics = new MenuItem("Statistics", new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('s'), false));
+    private MenuItem menuHelpItemAbout = new MenuItem("About", new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('a'), false));
     private Stamina stamina = new Stamina();
-    final String[] lessons_names = LessonsJSON.getLessonsNames();
+    private char keyTyped;
 
 
     public View() {
@@ -51,7 +60,7 @@ public class View extends JFrame {
 //                    tArea.setText("");
 //                }
                 keyTyped = e.getKeyChar();
-                if (stamina.strCurrent.length() == 25) endOfLesson();
+                if (stamina.strCurrent.length() == 25) endOfLessonDialog();
                 if (stamina.keyChecker(keyTyped)) {
                     setActualText(stamina.updateActual());
                 }
@@ -60,10 +69,9 @@ public class View extends JFrame {
         });
         add(tArea, c);
 
-        setActualText(stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[stamina.setLessonID(0)])));
+        updateViewWithNewLesson(0);
         tArea.select(0, 25);
         tArea.grabFocus();
-        setTitle(lessons_names[0]);
 
         tArea.addMouseListener(new MouseAdapter() {
             @Override
@@ -78,7 +86,6 @@ public class View extends JFrame {
                 tArea.grabFocus();
             }
         });
-
         tArea.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -97,43 +104,53 @@ public class View extends JFrame {
         add(lTimer, c);
 
 
-        MenuBar menuBar = new MenuBar();
-        Menu menuLanguages = new Menu("Language");
-        MenuItem menuLanguagesItem_EN = new MenuItem("⟹ English");
-        MenuItem menuLanguagesItem_RU = new MenuItem("     Russian");
         menuLanguages.add(menuLanguagesItem_EN);
         menuLanguages.add(menuLanguagesItem_RU);
         menuBar.add(menuLanguages);
 
-        Menu menuLessons = new Menu("Lesson");
-        MenuItem menuItemLessonOpen = new MenuItem("Open");
+        menuHelp.add(menuHelpItemUsers);
+        menuHelp.add(menuHelpItemStatistics);
+        menuHelp.addSeparator();
+        menuHelp.add(menuHelpItemAbout);
 
-        for (int i = 0; i < lessons_names.length; i++) {
-//            menuLessons.add(new MenuItem("⟹ " + lessons_names[i]));
-            final int lessonIDforMenu = i;
-            menuLessons.add(new MenuItem(lessons_names[i])).addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setActualText(stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[lessonIDforMenu])));
-                    setTitle(lessons_names[lessonIDforMenu]);
-                    stamina.setLessonID(lessonIDforMenu);
-                }
-            });
-        }
-        menuLessons.addSeparator();
-        menuLessons.add(menuItemLessonOpen);
-        menuBar.add(menuLessons);
-
-
-        setMenuBar(menuBar);
         menuItemLessonOpen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ev) {
-                String newLesson = LessonsJSON.read(openFileDialog());
-                newLesson = newLesson.replace("\n", "");
-                setActualText(stamina.updateActual(newLesson));
+                String path = openFileDialog();
+                if (!path.equals("")) {
+                    String newLesson = LessonsJSON.read(path);
+                    newLesson = newLesson.replace("\n", "");
+                    setActualText(stamina.updateActual(newLesson));
+                    setTitle("iStamina (by Burkova A. S.)");
+                }
             }
         });
+
+        menuLanguagesItem_EN.setShortcut(new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('e'), false));
+        menuLanguagesItem_RU.setShortcut(new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('r'), false));
+        menuLanguagesItem_EN.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                LessonsJSON.setLanguage("src/lessons_en.json");
+                repaintMenuLessons();
+                menuLanguagesItem_EN.setState(true);
+                menuLanguagesItem_RU.setState(false);
+                updateViewWithNewLesson(0);
+            }
+        });
+        menuLanguagesItem_RU.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                LessonsJSON.setLanguage("src/lessons_ru.json");
+                repaintMenuLessons();
+                menuLanguagesItem_RU.setState(true);
+                menuLanguagesItem_EN.setState(false);
+                updateViewWithNewLesson(0);
+            }
+        });
+
+        repaintMenuLessons();
+        setMenuBar(menuBar);
 
         pack();
         setVisible(true);
@@ -141,32 +158,21 @@ public class View extends JFrame {
 
 
     public String openFileDialog() {
-        String path = null;
-
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("Text Files", "txt");
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
         chooser.setDialogTitle("Select text file");
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setFileFilter(txtFilter);
-
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION || !path.equals("")) {
-            path = ""+chooser.getSelectedFile();
-        } else if (chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION) {
-            JOptionPane.showMessageDialog(new JFrame(), "No Selection!", "", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        }
-        return path;
+        return (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) ? "" + chooser.getSelectedFile() : "";
     }
 
 
-    public void endOfLesson() {
+    public void endOfLessonDialog() {
         Object[] options = {"Да!", "Потом..."};
         int n = JOptionPane.showOptionDialog(null, "Оличек - молодец, давай ещё?!", "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-        if (n==1) System.exit(0);
-        else setActualText(stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[stamina.getNextLessonID()])));
+        if (n == 1) System.exit(0);
+        else updateViewWithNewLesson(stamina.getNextLessonID());
     }
 
 
@@ -176,4 +182,38 @@ public class View extends JFrame {
         tArea.grabFocus();
     }
 
+
+    public void updateViewWithNewLesson(int lessonID) {
+        setActualText(stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[stamina.setLessonID(lessonID)])));
+        setTitle(LessonsJSON.getLessonsNames()[lessonID]);
+        stamina.setLessonID(lessonID);
+        repaintMenuLessons();
+    }
+
+
+    public void repaintMenuLessons() {
+        menuLessons.removeAll();
+        final CheckboxMenuItem[] cbmi = new CheckboxMenuItem[LessonsJSON.getLessonsNames().length];
+        for (int i = 0; i < LessonsJSON.getLessonsNames().length; i++) {
+            final int lessonIDforMenu = i;
+            cbmi[i] = new CheckboxMenuItem(LessonsJSON.getLessonsNames()[i]);
+            if (cbmi[i].getLabel().equals(LessonsJSON.getLessonsNames()[stamina.getLessonID()])) cbmi[i].setState(true);
+            else cbmi[i].setState(false);
+            cbmi[i].addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    updateViewWithNewLesson(lessonIDforMenu);
+                    for (int i = 0; i < LessonsJSON.getLessonsNames().length; i++) { //обработка ручной смены урока через меню
+                        if (e.getItem().equals(cbmi[i].getLabel())) continue;
+                        else cbmi[i].setState(false);
+                    }
+                }
+            });
+            menuLessons.add(cbmi[i]);
+        }
+        menuLessons.addSeparator();
+        menuLessons.add(menuItemLessonOpen);
+        menuBar.add(menuLessons);
+        menuBar.add(menuHelp);
+    }
 }

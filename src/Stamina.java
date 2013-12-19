@@ -1,8 +1,8 @@
 
 public class Stamina {
 
-    public int lessonID = 0;
-    public String whiteSpace = "                         ";
+    private int lessonID = 0;
+    private String whiteSpace = "                         ";
     public String strCurrent = whiteSpace + LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[lessonID]);
 
 
@@ -31,6 +31,11 @@ public class Stamina {
 
     public int setLessonID(int id) {
         lessonID = id;
+        return lessonID;
+    }
+
+
+    public int getLessonID() {
         return lessonID;
     }
 
