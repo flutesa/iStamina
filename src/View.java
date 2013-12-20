@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
@@ -19,7 +21,11 @@ public class View extends JFrame {
     private MenuItem menuHelpItemUsers = new MenuItem("Users", new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('u'), false));
     private MenuItem menuHelpItemStatistics = new MenuItem("Statistics", new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('s'), false));
     private MenuItem menuHelpItemAbout = new MenuItem("About", new MenuShortcut(KeyEvent.getExtendedKeyCodeForChar('a'), false));
+
+    private JToolTip n = new JToolTip();
+
     private Stamina stamina = new Stamina();
+    private Statistics stat = new Statistics();
     private char keyTyped;
 
 
@@ -59,14 +65,21 @@ public class View extends JFrame {
 //                if (e.getKeyCode() == KeyEvent.VK_ENTER){
 //                    tArea.setText("");
 //                }
-                keyTyped = e.getKeyChar();
-                if (stamina.strCurrent.length() == 25) endOfLessonDialog();
-                if (stamina.keyChecker(keyTyped)) {
-                    setActualText(stamina.updateActual());
+                if (e.getKeyCode() == 39) updateViewWithNewLesson(stamina.getNextLessonID());
+                if (e.getKeyCode() == 37) updateViewWithNewLesson(stamina.getPreviousLessonID());
+                if (stamina.getCurrentLessonLength() == 0) {
+                    stat.stopTimer();
+                    endOfLessonDialog();
                 }
+                keyTyped = e.getKeyChar();
+                if (stamina.keyChecker(keyTyped)) setActualText(stamina.updateActual());
+                else stat.incMistake();
+                if (stamina.getCurrentLessonLength()+1 == stamina.getSourceLessonLength()) stat.startTimer();
+
                 System.out.println(keyTyped);
             }
         });
+        tArea.setToolTipText("asdf");
         add(tArea, c);
 
         updateViewWithNewLesson(0);
@@ -131,21 +144,13 @@ public class View extends JFrame {
         menuLanguagesItem_EN.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                LessonsJSON.setLanguage("src/lessons_en.json");
-                repaintMenuLessons();
-                menuLanguagesItem_EN.setState(true);
-                menuLanguagesItem_RU.setState(false);
-                updateViewWithNewLesson(0);
+                updateViewWithAnotherLanguage('e');
             }
         });
         menuLanguagesItem_RU.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                LessonsJSON.setLanguage("src/lessons_ru.json");
-                repaintMenuLessons();
-                menuLanguagesItem_RU.setState(true);
-                menuLanguagesItem_EN.setState(false);
-                updateViewWithNewLesson(0);
+                updateViewWithAnotherLanguage('r');
             }
         });
 
@@ -170,7 +175,8 @@ public class View extends JFrame {
 
     public void endOfLessonDialog() {
         Object[] options = {"Да!", "Потом..."};
-        int n = JOptionPane.showOptionDialog(null, "Оличек - молодец, давай ещё?!", "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        int n = JOptionPane.showOptionDialog(null, "Ошибок: " + stat.getMistake()
+                + " штук\n% ошибок: " + stat.getMistakePercentage() + "%\nвремя: " + stat.getTime() + " секунд\nскорость: " + stat.getSpeed() + "\nскорость: " + stat.getAverageSpeed() + "\nскорость: " + stat.getAverageSpeed_v2() + "\nскорость: " + stat.getAverageSpeed_v3() + "\nскорость: " + stat.getAverageSpeed_v4(), "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         if (n == 1) System.exit(0);
         else updateViewWithNewLesson(stamina.getNextLessonID());
     }
@@ -183,10 +189,28 @@ public class View extends JFrame {
     }
 
 
+    public void updateViewWithAnotherLanguage(char l) {
+        if (l == 'e') {
+            LessonsJSON.setLanguage("src/lessons_en.json");
+            menuLanguagesItem_EN.setState(true);
+            menuLanguagesItem_RU.setState(false);
+        }
+        if (l == 'r') {
+            LessonsJSON.setLanguage("src/lessons_ru.json");
+            menuLanguagesItem_EN.setState(false);
+            menuLanguagesItem_RU.setState(true);
+        }
+        repaintMenuLessons();
+        updateViewWithNewLesson(0);
+    }
+
+
     public void updateViewWithNewLesson(int lessonID) {
         setActualText(stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[stamina.setLessonID(lessonID)])));
         setTitle(LessonsJSON.getLessonsNames()[lessonID]);
         stamina.setLessonID(lessonID);
+        stat.setMistake(0);
+        stat.setTime(0);
         repaintMenuLessons();
     }
 
@@ -216,4 +240,8 @@ public class View extends JFrame {
         menuBar.add(menuLessons);
         menuBar.add(menuHelp);
     }
+
+
+
+
 }

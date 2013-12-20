@@ -1,44 +1,56 @@
 
 public class Stamina {
 
-    private int lessonID = 0;
+    private static int lessonID = 0;
     private String whiteSpace = "                         ";
     public String strCurrent = whiteSpace + LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[lessonID]);
+    public static String strResent = "";
 
 
     public static void main(String[] args) {
         new View();
     }
 
-
     public boolean keyChecker(char key) {
         return key == strCurrent.substring(25, 26).toCharArray()[0];
     }
 
-
     public String updateActual() {
         if (strCurrent.length() == 0) return "";
+        strResent = strResent + strCurrent.substring(1, strCurrent.length());
         strCurrent = strCurrent.substring(1, strCurrent.length());
         return strCurrent;
     }
-
 
     public String updateActual(String str) {
         strCurrent = whiteSpace + str;
         return strCurrent;
     }
 
-
     public int setLessonID(int id) {
         lessonID = id;
         return lessonID;
     }
 
-
-    public int getLessonID() {
+    public static int getLessonID() {
         return lessonID;
     }
 
+    public static String getLessonName() {
+        return "";
+    }
+
+    public static int getSourceLessonLength() {
+        return LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[Stamina.getLessonID()]).length();
+    }
+
+    public int getCurrentLessonLength() {
+        return strCurrent.length() - 25;
+    }
+
+    public static int getTypedLessonLength() {
+        return strResent.length();
+    }
 
     public int getNextLessonID() {
         lessonID++;
@@ -47,5 +59,9 @@ public class Stamina {
         return lessonID;
     }
 
-
+    public int getPreviousLessonID() {
+        lessonID--;
+        if (lessonID <= 0) lessonID = 0;
+        return lessonID;
+    }
 }
