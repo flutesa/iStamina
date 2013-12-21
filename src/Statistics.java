@@ -1,8 +1,6 @@
-import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-//import java.util.Timer;
 import java.awt.event.KeyEvent;
 import java.util.*;
 
@@ -11,12 +9,15 @@ public class Statistics {
     private Integer time = 0;
     private ArrayList<Integer> times = new ArrayList<Integer>();
     private ArrayList<Integer> speeds = new ArrayList<Integer>();
-    private ArrayList<Integer> mistakes = new ArrayList<Integer>();
+    private ArrayList<Integer> mistakes = new ArrayList<Integer>(); //для глобальной статистики ошибочных клавиш
     private Timer timer;
 
     //Mistakes
-    public void setMistake(int count) {
-        mistake = count;
+    public void resetAllStatistics() {
+        mistake = 0;
+        time = 0;
+        times.clear();
+        speeds.clear();
     }
 
     public void incMistake() {
@@ -33,21 +34,20 @@ public class Statistics {
     }
 
     public int getMistakePercentage() {
-        return getMistake()/Stamina.getSourceLessonLength()*100;
+        double mis = getMistake();
+        double len = Stamina.getSourceLessonLength();
+        double ans = (mis / len) * 100;
+        return (int)ans;
     }
 
     //Timers
-    public void setTime(int tm) {
-        time = tm;
-    }
-
     public void startTimer() {
         ActionListener taskPerformer = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 time++;
                 times.add(time);
-                speeds.add(Stamina.getTypedLessonLength()/time); //Speed in SECONDS
+                speeds.add(Stamina.getTypedLessonLength() / time);
             }
         };
         timer = new Timer(1000, taskPerformer);
@@ -63,29 +63,20 @@ public class Statistics {
     }
 
     //Speed in SECONDS
-    public String getSpeed() {
+    public String getSpeed() {   //для отображения в окне текущей скорости во время урока
         return speeds.toString();
     }
 
-    public int getAverageSpeed() {   //средняя арифметическая скорость за 100 секунд
+    public int getAverageSpeed() { //средняя скорость за 60 секунд, считается только по правильно набранным клавишам
+        return Stamina.getTypedLessonLength()/getTime()*60;
+    }
+
+    public int getAverageSpeed_v2() { //средняя арифметическая скорость за 60 секунд, считается только по правильно набранным клавишам
         int sumSpeed = 0;
-        Iterator iter = speeds.iterator();
-        while (iter.hasNext()) sumSpeed += (Integer) iter.next();
-        return sumSpeed/getTime();
-    }
-
-    public int getAverageSpeed_v2() { //средняя скорость за 100 секунд
-        return Stamina.getTypedLessonLength()/getTime();
-    }
-
-    public int getAverageSpeed_v3() { //!!! //средняя арифметическая скорость за 60 секунд
-        int sumSpeed = 0;
-        Iterator iter = speeds.iterator();
-        while (iter.hasNext()) sumSpeed += (Integer) iter.next();
-        return sumSpeed/(60/getTime());
-    }
-
-    public int getAverageSpeed_v4() { //средняя скорость за 60 секунд
-        return Stamina.getTypedLessonLength()/(60/getTime());
+        for (Integer speed : speeds) sumSpeed += speed;
+        double time = getTime();
+        double len = sumSpeed;
+        double ans = len/time*60;
+        return (int)ans;
     }
 }

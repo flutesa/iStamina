@@ -9,6 +9,7 @@ public class Stamina {
 
     public static void main(String[] args) {
         new View();
+//        new Graphic();
     }
 
     public boolean keyChecker(char key) {
@@ -17,13 +18,14 @@ public class Stamina {
 
     public String updateActual() {
         if (strCurrent.length() == 0) return "";
-        strResent = strResent + strCurrent.substring(1, strCurrent.length());
+        strResent = strResent + strCurrent.substring(25, 26);
         strCurrent = strCurrent.substring(1, strCurrent.length());
         return strCurrent;
     }
 
-    public String updateActual(String str) {
+    public String updateActualAndResent(String str) {
         strCurrent = whiteSpace + str;
+        strResent = "";
         return strCurrent;
     }
 

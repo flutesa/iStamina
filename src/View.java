@@ -1,6 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
@@ -133,7 +131,7 @@ public class View extends JFrame {
                 if (!path.equals("")) {
                     String newLesson = LessonsJSON.read(path);
                     newLesson = newLesson.replace("\n", "");
-                    setActualText(stamina.updateActual(newLesson));
+                    setActualText(stamina.updateActualAndResent(newLesson));
                     setTitle("iStamina (by Burkova A. S.)");
                 }
             }
@@ -175,8 +173,8 @@ public class View extends JFrame {
 
     public void endOfLessonDialog() {
         Object[] options = {"Да!", "Потом..."};
-        int n = JOptionPane.showOptionDialog(null, "Ошибок: " + stat.getMistake()
-                + " штук\n% ошибок: " + stat.getMistakePercentage() + "%\nвремя: " + stat.getTime() + " секунд\nскорость: " + stat.getSpeed() + "\nскорость: " + stat.getAverageSpeed() + "\nскорость: " + stat.getAverageSpeed_v2() + "\nскорость: " + stat.getAverageSpeed_v3() + "\nскорость: " + stat.getAverageSpeed_v4(), "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        int n = JOptionPane.showOptionDialog(null, "ошибок: " + stat.getMistake()
+                + " штук\nошибок: " + stat.getMistakePercentage() + "%\nвремя: " + stat.getTime() + " секунд\nскорость: " + stat.getAverageSpeed(), "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         if (n == 1) System.exit(0);
         else updateViewWithNewLesson(stamina.getNextLessonID());
     }
@@ -206,11 +204,10 @@ public class View extends JFrame {
 
 
     public void updateViewWithNewLesson(int lessonID) {
-        setActualText(stamina.updateActual(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[stamina.setLessonID(lessonID)])));
+        setActualText(stamina.updateActualAndResent(LessonsJSON.getLesson(LessonsJSON.getLessonsNames()[stamina.setLessonID(lessonID)])));
         setTitle(LessonsJSON.getLessonsNames()[lessonID]);
         stamina.setLessonID(lessonID);
-        stat.setMistake(0);
-        stat.setTime(0);
+        stat.resetAllStatistics();
         repaintMenuLessons();
     }
 
@@ -240,8 +237,4 @@ public class View extends JFrame {
         menuBar.add(menuLessons);
         menuBar.add(menuHelp);
     }
-
-
-
-
 }
