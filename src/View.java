@@ -174,9 +174,13 @@ public class View extends JFrame {
     public void endOfLessonDialog() {
         Object[] options = {"Да!", "Потом..."};
         int n = JOptionPane.showOptionDialog(null, "ошибок: " + stat.getMistake()
-                + " штук\nошибок: " + stat.getMistakePercentage() + "%\nвремя: " + stat.getTime() + " секунд\nскорость: " + stat.getAverageSpeed(), "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                + " штук\nошибок: " + stat.getMistakePercentage() + "%\nвремя: " + stat.getTime() + " секунд\nскорость: " + stat.getAverageSpeed() + " зн/мин", "урок закончен", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+
         if (n == 1) System.exit(0);
         else updateViewWithNewLesson(stamina.getNextLessonID());
+
+
     }
 
 
