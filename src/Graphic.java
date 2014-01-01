@@ -4,21 +4,8 @@ import java.awt.Graphics;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class Graphic {
 
-    public static void main(String[] args) {
-        Integer[] y = {360, 360, 360, 300, 300, 240, 240, 240, 240, 240, 240, 240, 240, 240, 180, 180, 180, 180, 180, 180, 180, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-//  183?
-//        Integer[] y = {300, 180, 240, 180, 180, 240, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 180, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 180, 180, 180, 180, 120, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120};
-//  147
-//        Integer[] y = {360, 330, 300, 285, 288, 270, 274, 255, 260, 258, 245, 230, 231, 223, 224, 221, 226, 230, 234, 237, 240, 243, 243, 243, 240, 240, 240, 238, 234, 234, 230, 231, 227, 226, 226, 227, 229, 227, 229, 230, 228, 227, 226, 224, 223, 219, 214, 211, 209, 205, 205, 207, 207, 207, 204, 204, 202, 201, 199, 200, 198, 197, 196, 198, 199, 197, 197, 198, 199, 201, 202, 203, 204, 202, 202, 201, 200, 199, 200, 201, 200, 198, 199, 199, 199, 199, 199, 199, 200, 199, 200, 200, 200, 199, 198, 197, 196, 196, 195, 194, 194, 192, 191, 191, 190, 189, 188, 188, 187, 185, 185, 185, 185, 184, 183, 183, 182, 180, 179, 179, 179, 178, 177, 176, 175, 174, 174, 173, 173, 172, 172, 171, 170, 170, 169, 169, 169, 168, 168, 167, 167, 166, 165, 165, 164, 164, 163};
-        new Dr(y);
-    }
-}
-
-class Draw extends javax.swing.JFrame {
-
-    int getTime;
+public class Graphic extends javax.swing.JFrame {
 
     private int sizeY = 5; //кол-во значений на оси Y, скорость зн/мин
     private int sizeX = 10;//кол-во значений на оси X, секунды прохождения урока
@@ -33,15 +20,13 @@ class Draw extends javax.swing.JFrame {
 //    private Dimension size = new Dimension(500,250); //рабочая область
 //    private Dimension startPointXoY = new Dimension(50,200); //начало координат
 
-    public Draw(Integer[] speedsArray) {
-        getTime = speedsArray.length;
+    public Graphic(Integer[] speedsArray) {
         buildArrays(speedsArray);
         initInterface();
     }
 
     @Override
     public void paint(Graphics g) {
-
         g.setColor(Color.WHITE);
         g.fillRect(0,0,size.width,size.height);
         g.setColor(Color.BLACK);
@@ -69,19 +54,18 @@ class Draw extends javax.swing.JFrame {
         g.setColor(Color.BLACK);
         g.drawLine(startPointXoY.width, startPointXoY.width, startPointXoY.width, startPointXoY.height); //ось Y левая
         g.drawLine(startPointXoY.width, startPointXoY.height, size.width - 20, startPointXoY.height);      //ось X нижняя
-//        g.drawLine(startPointXoY.width,Statistics.getAverageSpeed(),startPointXoY.width + x[8]-8,Statistics.getAverageSpeed());      //ось X нижняя
 
-
-//        g.drawLine(startPointXoY.width,startPointXoY.height,size.width-20,startPointXoY.height);      //ось X нижняя
         g.setColor(Color.RED);
-        g.drawLine(startPointXoY.width,206,startPointXoY.width + x[8]-8,206);      //средняя скорость
+//        System.out.println(Statistics.getAverageSpeed());
+        g.drawLine(startPointXoY.width,210,startPointXoY.width + x[8]-8,210);      //средняя скорость
+//        g.drawLine(startPointXoY.width,Statistics.getAverageSpeed(),startPointXoY.width + x[8]-8,Statistics.getAverageSpeed());      //средняя скорость
+//        g.drawOval(startPointXoY.width, startPointXoY.height - (startPointXoY.width - 5) * 4, 1, 1);
 
         g.drawPolyline(x,y,10);
     }
 
     private void buildArrays(Integer[] sp) {
-//        int timeInterval = Statistics.getTime() / sizeX;
-        int timeInterval = getTime / sizeX;
+        int timeInterval = Statistics.getTime() / sizeX;
 
         y = Statistics.getSpeedPerCurrentTimePeriod(timeInterval, sp); // средние значения для координат по оси Х
         for (int i = 0; i < y.length; i++){
@@ -104,6 +88,7 @@ class Draw extends javax.swing.JFrame {
 
         int delta = (max - min)/4;    //интервал для вычисления промежуточных значений
         int k = 0;
+        System.out.println("min = " + min + " max = " + max);
         yForGraph[yForGraph.length-1] = (int)new BigDecimal(max*0.1).setScale(0, RoundingMode.UP).doubleValue()*10; //округляем маx до десятых в бОльшую сторону
         for (int i = 0; i < yForGraph.length-1; i++) {
             yForGraph[i] = (int)new BigDecimal((min + k)*0.1).setScale(0, RoundingMode.DOWN).doubleValue()*10; //округляем min до десятых в меньшую сторону
@@ -121,25 +106,18 @@ class Draw extends javax.swing.JFrame {
         }
 
 
-        System.out.println(max + " " + min);
-        double koeff = 140.0/max;   //140 - координата максимума по Y
-        System.out.println(koeff);
+        //коэффициенты для масштабирования и сдвиги для позиционирования
+        double koef = computeRatio(min, max);
+        System.out.println(koef);
 
-        //коэффициенты для корректного масштабирования
-        for (int i = 0; i < x.length; i++) {
-//            System.out.println(x[i] + " " + y[i]);
-            x[i] *= 33;                                  //ok
-            x[i] += startPointXoY.width;                 //ok
-//            y[i] = (int)(1.35 * y[i]);                 //ok for 183
-//            y[i] = (int)(1.13 * y[i]);
-
-            y[i] = (int)(y[i] * koeff); //ok
-            y[i] = startPointXoY.height - y[i] + y[9]; //ok для смещения вниз    y[9] - min
-//            y[i] = startPointXoY.height - y[i] + findMinMax(y)[0]; //ok для смещения вниз
+        for (int i = 0; i < y.length; i++) {
+            x[i] *= 33;
+            x[i] += startPointXoY.width;
+            y[i] = (int)(y[i] * koef); //ok
+            y[i] = startPointXoY.height - y[i]; //ok для обращения координат
+            y[i] = y[i] + (int)(min*koef); //ok для смещения вниз    y[9] - min
             System.out.println(x[i] + " " + y[i]);
         }
-//        System.out.println(startPointXoY.height - (startPointXoY.width - 5) * 4);
-//        System.out.println(startPointXoY.height - 80);
     }
 
     public int[] findMinMax(int[] array) {
@@ -154,6 +132,13 @@ class Draw extends javax.swing.JFrame {
         return result;
     }
 
+    public double computeRatio(int min, int max) {
+        int delta = max - min;
+        int hightGraph = (startPointXoY.height - (startPointXoY.width - 5)) - (startPointXoY.height - (startPointXoY.width - 5) * 5);
+        double percent = 100 * delta / hightGraph;
+        return 100 / percent;
+    }
+
     private void initInterface() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(size);
@@ -163,4 +148,3 @@ class Draw extends javax.swing.JFrame {
         setVisible(true);
     }
 }
-
